@@ -3,7 +3,7 @@
 # app = .. an instance of class Flask
 from flask import Flask
 
-
+# export FLASK_APP=blog.py
 #An instance of this class Flask will be our WSGI application.
 
 app = Flask(__name__)  #create an instance
