@@ -1,20 +1,24 @@
-# from flask - flask package
-# import Flask - class Flask
-# app = .. an instance of class Flask
 from flask import Flask
+# Here we are importing the Flask module and creating a Flask web server from the Flask module.
+from config import Config
+from flask_sqlalchemy import SQLAlchemy
+from flask_migrate import Migrate
 
 # export FLASK_APP=blog.py
 #An instance of this class Flask will be our WSGI application.
 
-app = Flask(__name__)  #create an instance
+app = Flask(__name__)
+# app.config.from_object(Config)
 app.config.from_pyfile('config.py')
-from app import routes
+db=SQLAlchemy(app)
+migrate=Migrate(app, db)
+# it's migration engine
+from app import routes, models
 
 
-# routes module
-# There are two entities named app
-# The app package is defined by the app directory and the __init__.py script,
-# and is referenced in the from app import routes statement.
-# The app variable is defined as an instance of class Flask in the __init__.py script,
-# which makes it a member of the app package.
+#  __name__ means this current file, in this case it will be __init__.py
+#  This current file will represent my web application.
+# We are creating an instance of the Flask class and calling it app.
+# Here we are creating a new web application.
+
 
