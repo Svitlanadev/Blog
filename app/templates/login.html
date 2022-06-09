@@ -2,6 +2,7 @@
 
 {% block content %}
     <h1> Sign In </h1>
+    <p>New user?<a href="{{ url_for('register') }}">Click to register!</a></p>
     <form action="" method="post" novalidate>
         {{ form.hidden_tag() }}
         <p>
@@ -22,4 +23,6 @@
         <p>{{ form.submit() }}</p>
     </form>
 {% endblock %}
+
+
 
