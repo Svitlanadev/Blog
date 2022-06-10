@@ -21,9 +21,9 @@ migrate=Migrate(app, db)
 from app import routes, models
 
 
-#  __name__ means this current file, in this case it will be __init__.py
-#  This current file will represent my web application.
-# We are creating an instance of the Flask class and calling it app.
-# Here we are creating a new web application.
+
+
+
+
 
 

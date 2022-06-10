@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <table>
+        <tr valign="top">
+            <td><img src="{{ post.author.avatar(36) }}"></td>
+            <td>{{ post.author.username }} wrote: <br>{{ post.body }}</td>
+        </tr>
+    </table>
+{% endblock %}
+
