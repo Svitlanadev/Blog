@@ -1,29 +1,21 @@
 from flask import render_template, redirect, flash, url_for, request, session
 from app import app
-from app.forms import LoginForm, RegistrationForm, EditProfileForm
+from app.forms import LoginForm, RegistrationForm, EditProfileForm, PostForm
 from flask_login import current_user, login_user, logout_user, login_required
-from app.models import User
+from app.models import User, Post
 from werkzeug.urls import url_parse
 from app import db
 from werkzeug.security import generate_password_hash
 from datetime import datetime
 
 
-@app.route('/')
-@app.route('/index')
+@app.route('/', methods=['GET', 'POST'])
+@app.route('/index', methods=['GET', 'POST'])
+# @login_required
 def index():
-    user = {"username": "Svitlana"}
-    posts = [
-        {
-            'author': {'username': 'Jon'},
-            'body': 'Beautiful day in Portland!'
-        },
-        {
-            'author': {'username': 'Pip'},
-            'body': 'The Avengers movie was so cool.'
-        },
-    ]
+    posts = Post.query.order_by(Post.timestamp.desc()).all()
     return render_template('index.html', title='Home Page', posts=posts)
+    # return render_template('index.html', title='Home Page', form=form, posts=posts)
 
 
 @app.route('/login', methods=['GET', 'POST'])
@@ -71,10 +63,11 @@ def register():
 @login_required
 def user(username):
     user = User.query.filter_by(username=username).first_or_404()
-    posts = [
-        {'author': user, 'body': 'Test post 1'},
-        {'author': user, 'body': 'Test post 2'}
-    ]
+    posts = Post.query.filter_by(author=user).order_by(Post.timestamp.desc()).all()
+    # posts = [
+    #     {'author': user, 'body': 'Test post 1'},
+    #     {'author': user, 'body': 'Test post 2'}
+    # ]
     return render_template('user.html', user=user, posts=posts)
 
 
@@ -99,6 +92,23 @@ def edit_profile():
         form.username.data = current_user.username
         form.about_me.data = current_user.about_me
     return render_template('edit_profile.html', title='Edit Profile', form=form)
+
+# @app.route('/explore')
+# def explore():
+#     posts = Post.query.order_by(Post.timestamp.desc()).all()
+#     return render_template('index.html', title='Explore', posts=posts)
+@app.route('/new_post', methods=['GET', 'POST'])
+@login_required
+def new_post():
+    form = PostForm()
+    if form.validate_on_submit():
+        post = Post(body=form.post.data, author=current_user)
+        db.session.add(post)
+        db.session.commit()
+        flash('Your post is written')
+        return redirect(url_for('index'))
+    return render_template('new_post.html', title='New Post', form=form)
+
 
 
 

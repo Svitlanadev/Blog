@@ -1,11 +1,18 @@
-{% extends 'base.html' %}
 
 {% block content %}
     <table>
         <tr valign="top">
             <td><img src="{{ post.author.avatar(36) }}"></td>
-            <td>{{ post.author.username }} wrote: <br>{{ post.body }}</td>
+            <td><a href="{{ url_for('user', username=post.author.username) }}">
+                    {{ post.author.username }}
+                </a>
+                wrote: <br>{{ post.body }}
+                {{ post.timestamp.strftime("%d-%m-%Y, %H:%M") }}
+            </td>
         </tr>
     </table>
 {% endblock %}
+
+
+
 

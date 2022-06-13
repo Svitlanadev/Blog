@@ -8,7 +8,7 @@
             <td>
                 <h1>User: {{ user.username }}</h1>
                 {% if user.about_me %}<p>{{ user.about_me }}</p>{% endif %}
-                {% if user.last_seen %}<p>Last seen on: {{ user.last_seen }}</p>{% endif %}
+                {% if user.last_seen %}<p>Last seen on: {{ user.last_seen.strftime("%d-%m-%Y, %H:%M") }}</p>{% endif %}
             </td>
         </tr>
     </table>
@@ -19,4 +19,6 @@
     {% for post in posts %}
         {% include "_post.html" %}
     {% endfor %}
+    <br><br>
+    <a href="{{ url_for('new_post') }}">Write a new post </a>
 {% endblock %}
