@@ -42,6 +42,7 @@ class PostForm(FlaskForm):
     post = TextAreaField('Write something', validators=[DataRequired() ])
     submit = SubmitField('Submit')
 
-
+class EmptyForm(FlaskForm):
+    submit = SubmitField('Submit')
 
 
