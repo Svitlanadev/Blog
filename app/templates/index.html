@@ -3,10 +3,29 @@
 
 {% block content %}
     <h1> Hello {{current_user.username}} !</h1>
+    <img src="https://upload.wikimedia.org/wikipedia/commons/1/1a/Elephant_Diversity.jpg" class="img-fluid"  alt="ELephant" width="300" height="200">
+    <br>
     <a href="{{ url_for('new_post') }}">Write a new post </a>
     {% for post in posts %}
         {% include '_post.html' %}
     {% endfor %}
 
-{% endblock %}
+    <nav aria-label="...">
+        <ul class="pager">
+<!--            <li class="previous{% if not prev_url %} disabled{% endif %}">-->
+            {% if prev_url %}
+                <a href="{{ prev_url }}">
+                    <span aria-hidden="true">&larr;</span>Newer posts'
+                </a>
+            {% endif %}
+            {% if next_url %}
+<!--            <li class="next{% if not next_url %} disabled{% endif %}">-->
+                <a href="{{ next_url }}">
+                    Older posts<span aria-hidden="true">&rarr;</span>
+                </a>
+            {% endif %}
+        </ul>
+    </nav>
 
+
+{% endblock %}

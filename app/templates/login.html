@@ -1,28 +1,35 @@
 {% extends 'base.html' %}
+{% import "bootstrap/wtf.html" as wtf %}
+<!--Flask-Bootstrap also provides a "quick_form" method, which commands Jinja2 to render an entire web page
+based on our form model with one line of code.-->
+
 
 {% block content %}
-    <h1> Sign In </h1>
-    <p>New user?  <a href="{{ url_for('register') }}">Click here to register!</a></p>
-    <form action="" method="post" novalidate>
+<div class="container">
+    <form action="" method="post">
+        <h1>Sign In</h1>
+        <p>New user?  <a href="{{ url_for('register') }}">Click here to register!</a></p>
         {{ form.hidden_tag() }}
-        <p>
-            {{ form.username.label }} <br>
-            {{ form.username(size=32) }}
-            {% for error in form.username.errors %}
-            <span style="color: red;">[{{ error }}]</span>
-            {% endfor %}
-        </p>
-        <p>
-            {{ form.password.label }} <br>
-            {{ form.password(size=32) }}
-            {% for error in form.password.errors %}
-            <span style="color: red;">[{{ error }}]</span>
-            {% endfor %}
-        </p>
-        <p>{{ form.remember_me() }} {{form.remember_me.label }}</p>
-        <p>{{ form.submit() }}</p>
+        <hr>
+        {{ wtf.form_field(form.username) }}
+        {% for error in form.username.errors %}
+            <div class="alert alert-danger" role="alert">{{ error }}</div>
+        {% endfor %}
+        {{ wtf.form_field(form.password) }}
+        {% for error in form.password.errors %}
+            <div class="alert alert-danger" role="alert">{{ error }}</div>
+        {% endfor %}
+        {{ wtf.form_field(form.remember_me) }}
+        {{ wtf.form_field(form.submit) }}
     </form>
+</div>
 {% endblock %}
+
+
+
+
+
+
 
 
 

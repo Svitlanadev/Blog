@@ -4,7 +4,7 @@ from app.forms import LoginForm, RegistrationForm, EditProfileForm, PostForm, Em
 from flask_login import current_user, login_user, logout_user, login_required
 from app.models import User, Post
 from werkzeug.urls import url_parse
-from app import db
+from app import db, config
 from werkzeug.security import generate_password_hash
 from datetime import datetime
 
@@ -13,9 +13,19 @@ from datetime import datetime
 @app.route('/index', methods=['GET', 'POST'])
 # @login_required
 def index():
-    posts = Post.query.order_by(Post.timestamp.desc()).all()
-    return render_template('index.html', title='Home Page', posts=posts)
-    # return render_template('index.html', title='Home Page', form=form, posts=posts)
+    # posts = Post.query.order_by(Post.timestamp.desc()).all()
+    if current_user.is_authenticated:
+        # posts = current_user.followed_posts().all()
+        # Flask-SQLAlchemy supports pagination natively with the paginate() query method
+        page = request.args.get('page', 1, type=int)
+        posts = current_user.followed_posts().paginate(page, app.config['POSTS_PER_PAGE'], False)
+        next_url = url_for('index', page=posts.next_num) \
+            if posts.has_next else None
+        prev_url = url_for('index', page=posts.prev_num) \
+            if posts.has_prev else None
+    else:
+        return redirect(url_for('login'))
+    return render_template('index.html', title='Home Page', posts=posts.items, next_url=next_url, prev_url=prev_url)
 
 
 @app.route('/login', methods=['GET', 'POST'])
@@ -59,17 +69,35 @@ def register():
     return render_template('register.html', title='Register', form=form)
 
 
+# @app.route('/user/<username>')
+# @login_required
+# def user(username):
+#     user = User.query.filter_by(username=username).first_or_404()
+#     page = request.args.get('page', 1, type=int)
+#     posts = Post.query.filter_by(author=user).order_by(Post.timestamp.desc()).all()
+    # posts = Post.query.filter_by(author=user).order_by(Post.timestamp.desc()).paginate(page, 5, False)
+    # next_url = url_for('user', page=posts.next_num) \
+    #     if posts.has_next else None
+    # prev_url = url_for('user', page=posts.prev_num) \
+    #     if posts.has_prev else None
+    # form = EmptyForm()
+    # return render_template('user.html', user=user, posts=posts, form=form)
+
 @app.route('/user/<username>')
 @login_required
 def user(username):
     user = User.query.filter_by(username=username).first_or_404()
-    posts = Post.query.filter_by(author=user).order_by(Post.timestamp.desc()).all()
-    # posts = [
-    #     {'author': user, 'body': 'Test post 1'},
-    #     {'author': user, 'body': 'Test post 2'}
-    # ]
+    page = request.args.get('page', 1, type=int)
+    posts = user.post.order_by(Post.timestamp.desc()).paginate(
+        page, app.config['POSTS_PER_PAGE'], False)
+    next_url = url_for('user', username=user.username, page=posts.next_num) \
+        if posts.has_next else None
+    prev_url = url_for('user', username=user.username, page=posts.prev_num) \
+        if posts.has_prev else None
     form = EmptyForm()
-    return render_template('user.html', user=user, posts=posts, form=form)
+    return render_template('user.html', user=user, posts=posts.items,
+                           next_url=next_url, prev_url=prev_url, form=form)
+
 
 
 @app.before_request
@@ -150,10 +178,22 @@ def unfollow(username):
         return redirect(url_for('index'))
 
 
+@app.route('/explore')
+@login_required
+def explore():
+    # posts = Post.query.order_by(Post.timestamp.desc()).all()
+    page = request.args.get('page', 1, type=int)
+    posts = Post.query.order_by(Post.timestamp.desc()).paginate(page, app.config['POSTS_PER_PAGE'], False)
+    next_url = url_for('explore', page=posts.next_num) \
+        if posts.has_next else None
+    prev_url = url_for('explore', page=posts.prev_num) \
+        if posts.has_prev else None
+    # posts = Post.query.order_by(Post.timestamp.desc()).paginate(page, app.config['POSTS_PER_PAGE'], False)
+    return render_template('index.html', title='Explore', posts=posts.items, next_url=next_url, prev_url=prev_url)
 
-
-
-
-
+@app.route('/current_post/<id>')
+def current_post(id):
+    current_post = Post.query.filter_by(id=id).first()
+    return render_template('current_post', title='CurrentPost', current_post=current_post)
 
 

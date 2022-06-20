@@ -4,6 +4,7 @@ from config import Config
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from flask_login import LoginManager
+from flask_bootstrap import Bootstrap
 
 # export FLASK_APP=blog.py
 #An instance of this class Flask will be our WSGI application.
@@ -18,6 +19,7 @@ app.config.from_pyfile('config.py')
 db=SQLAlchemy(app)
 migrate=Migrate(app, db)
 # it's migration engine
+bootstrap=Bootstrap(app)
 from app import routes, models
 
 

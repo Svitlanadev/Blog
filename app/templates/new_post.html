@@ -1,13 +1,17 @@
-<html>
+{% extends 'base.html' %}
+{% import "bootstrap/wtf.html" as wtf %}
+
+{% block content %}
+    {% if form %}
     <form action="" method="post">
         {{ form.hidden_tag() }}
         <p>
-            {{ form.post.label }}<br>
-            {{ form.post(cols=32, raws=4) }}<br>
+            {{ wtf.form_field(form.post) }}<br>
             {% for error in form.post.errors %}
             <span style="color: red;">[ {{error}} ]</span>
             {% endfor %}
         </p>
-        <p>{{ form.submit() }}</p>
+        <p>{{ wtf.form_field(form.submit) }}</p>
     </form>
-</html>
+    {% endif %}
+{% endblock %}

@@ -31,32 +31,21 @@
     </p>
     {% endif %}
     <hr>
+    <p><a href="{{ url_for('new_post') }}">Write a new post </a></p>
+    <br>
     {% for post in posts %}
-        {% include "_post.html" %}
+        {% include '_post.html' %}
     {% endfor %}
-    <br><br>
-    <a href="{{ url_for('new_post') }}">Write a new post </a>
+    {% if prev_url %}
+    <a href="{{ prev_url }}">Newer posts</a>
+    {% endif %}
+    {% if next_url %}
+    <a href="{{ next_url }}">Older posts</a>
+    {% endif %}
+
 {% endblock %}
 
 
 
-{% if user.last_seen %}<p>Last seen on: {{ user.last_seen }}</p>{% endif %}
-        <p>{{ user.followers.count() }} followers, {{ user.followed.count() }} following.</p>
-        {% if user == current_user %}
-        <p><a href="{{ url_for('edit_profile') }}">Edit your profile</a></p>
-        {% elif not current_user.is_following(user) %}
-        <p>
-            <form action="{{ url_for('follow', username=user.username) }}" method="post">
-                {{ form.hidden_tag() }}
-                {{ form.submit(value='Follow') }}
-            </form>
-        </p>
-        {% else %}
-        <p>
-            <form action="{{ url_for('unfollow', username=user.username) }}" method="post">
-                {{ form.hidden_tag() }}
-                {{ form.submit(value='Unfollow') }}
-            </form>
-        </p>
-        {% endif %}
-        ...
+
+
