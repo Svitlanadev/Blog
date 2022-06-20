@@ -194,6 +194,6 @@ def explore():
 @app.route('/current_post/<id>')
 def current_post(id):
     current_post = Post.query.filter_by(id=id).first()
-    return render_template('current_post', title='CurrentPost', current_post=current_post)
+    return render_template('current_post.html', title='CurrentPost', current_post=current_post)
 
 

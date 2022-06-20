@@ -19,10 +19,12 @@ class User(UserMixin, db.Model):
     about_me = db.Column(db.String(150))
     last_seen = db.Column(db.DateTime, default=datetime.now)
     followed = db.relationship(
-        'User', secondary=followers,
+        'User',
+        secondary=followers,
         primaryjoin=(followers.c.follower_id == id),
         secondaryjoin=(followers.c.followed_id == id),
-        backref=db.backref('followers', lazy='dynamic'), lazy='dynamic')
+        backref=db.backref('followers', lazy='dynamic'),
+        lazy='dynamic')
 
     def set_password(self, password):
         # password_hash = generate_password_hash(self, password)
@@ -78,9 +80,4 @@ class Post(db.Model):
 
     def __repr__(self):
         return '<Post {}'.format(self.body)
-
-
-# strftime("%d-%m-%Y, %H:%M"
-
-
 
